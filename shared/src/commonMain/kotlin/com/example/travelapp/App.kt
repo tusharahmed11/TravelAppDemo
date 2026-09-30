@@ -7,6 +7,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.travelapp.listings.TravelListingScreen
+import com.example.travelapp.ui.home.HomeListingScreen
 import com.example.travelapp.ui.signin.LoginScreen
 import com.example.travelapp.ui.signup.SignUpScreen
 
@@ -19,7 +21,7 @@ fun App() {
                 .fillMaxSize()
                 .safeDrawingPadding()
         ) {
-            SignUpScreen()
+            HomeListingScreen()
         }
     }
 }
