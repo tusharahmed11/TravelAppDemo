@@ -1,5 +1,6 @@
 package com.example.data.di
 
+
 import com.example.data.datasource.DummyDataSource
 import com.example.data.datasource.RemoteDataSource
 import com.example.data.repository.ListingRepositoryImpl
@@ -34,7 +35,11 @@ val dataModule = module {
             }
             install(Logging) {
                 level = LogLevel.ALL
-                logger = Logger.DEFAULT
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        println("KtorHttp: $message")
+                    }
+                }
             }
             install(DefaultRequest) {
                 header(HttpHeaders.ContentType, ContentType.Application.Json)

@@ -1,8 +1,10 @@
 package com.example.data.repository
 
 import com.example.data.datasource.RemoteDataSource
+import com.example.data.mappers.RegisterRequestMapper
 import com.example.data.mappers.UserMapper
 import com.example.data.model.request.SignInRequest
+import com.example.domain.model.RegisterModel
 import com.example.domain.model.UserModel
 import com.example.domain.repository.UserRepository
 
@@ -22,6 +24,22 @@ class UserRepositoryImp(val dataSource: RemoteDataSource) : UserRepository {
             }
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+
+    override suspend fun register(request: RegisterModel): Result<UserModel> {
+        return try {
+            val response = dataSource.register(RegisterRequestMapper.toDto(request))
+            if (response.isSuccess) {
+                val response = response.getOrNull()!!
+                val userModel = UserMapper.toDomain(response.user)
+                Result.success(userModel)
+            } else {
+                Result.failure(Exception("Registration failed with status code: ${response.exceptionOrNull()}"))
+            }
+
+        } catch (ex: Exception) {
+            Result.failure(ex)
         }
     }
 }

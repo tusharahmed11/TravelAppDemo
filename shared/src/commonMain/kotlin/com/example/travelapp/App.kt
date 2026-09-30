@@ -19,7 +19,7 @@ fun App() {
                 .fillMaxSize()
                 .safeDrawingPadding()
         ) {
-            LoginScreen()
+            SignUpScreen()
         }
     }
 }

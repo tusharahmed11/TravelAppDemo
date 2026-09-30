@@ -1,6 +1,6 @@
 package com.example.data.mappers
 
-import com.example.data.model.UserDto
+import com.example.data.model.response.signin.UserDto
 import com.example.domain.model.UserModel
 
 object UserMapper {

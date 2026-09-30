@@ -1,5 +1,6 @@
 package com.example.travelapp.ui.signup
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,8 +15,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +34,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.presentation.feature.register.RegisterViewModel
 import com.example.travelapp.widget.AppCircleImageButton
 import com.example.travelapp.widget.AppPrimaryButton
 import com.example.travelapp.widget.AppSocialIconButton
@@ -38,13 +43,16 @@ import com.example.travelapp.widget.AppTextField
 import com.example.travelapp.widget.FacebookIcon
 import com.example.travelapp.widget.InstagramIcon
 import com.example.travelapp.widget.TwitterIcon
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun SignUpScreen() {
-    var email by remember { mutableStateOf("") }
-    var name by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+fun SignUpScreen(viewModel: RegisterViewModel = koinViewModel()) {
+
+    val uiState = viewModel.uiState.collectAsState()
+    var email = viewModel.email.collectAsState()
+    var name = viewModel.name.collectAsState()
+    var confirmPassword = viewModel.confirmPassword.collectAsState()
+    var password = viewModel.password.collectAsState()
     var isPasswordVisible by remember { mutableStateOf(false) }
 
     Column(
@@ -87,8 +95,8 @@ fun SignUpScreen() {
         AppSpacer(36.dp)
 
         AppTextField(
-            value = name,
-            onValueChange = { name = it },
+            value = name.value,
+            onValueChange = { viewModel.onNameChange(it) },
             placeholder = "Enter your name",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
@@ -99,8 +107,8 @@ fun SignUpScreen() {
         AppSpacer(16.dp)
 
         AppTextField(
-            value = email,
-            onValueChange = { email = it },
+            value = email.value,
+            onValueChange = { viewModel.onEmailChange(it) },
             placeholder = "Enter your email",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
@@ -111,8 +119,8 @@ fun SignUpScreen() {
         AppSpacer(16.dp)
 
         AppTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = password.value,
+            onValueChange = { viewModel.onPasswordChange(it) },
             placeholder = "Enter your password",
             isPassword = true,
             isPasswordVisible = isPasswordVisible,
@@ -126,8 +134,8 @@ fun SignUpScreen() {
         AppSpacer(16.dp)
 
         AppTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
+            value = confirmPassword.value,
+            onValueChange = { viewModel.onConfirmPasswordChange(it) },
             placeholder = "Confirm your password",
             isPassword = true,
             isPasswordVisible = isPasswordVisible,
@@ -139,12 +147,25 @@ fun SignUpScreen() {
         )
 
         AppSpacer(36.dp)
-
+        AnimatedVisibility(uiState.value.isLoading) {
+            CircularProgressIndicator()
+        }
         AppPrimaryButton(
             text = "Sign Up",
-            onClick = { /* Handle sign in */ },
+            onClick = { viewModel.register()},
             modifier = Modifier.fillMaxWidth()
         )
+
+        uiState.value.errorMessage?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                textAlign = TextAlign.Center
+            )
+        }
 
         AppSpacer(36.dp)
 

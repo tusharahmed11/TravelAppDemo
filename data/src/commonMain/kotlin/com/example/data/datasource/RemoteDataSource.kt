@@ -1,6 +1,7 @@
 package com.example.data.datasource
 
-import com.example.data.model.SignInResponse
+import com.example.data.model.response.signin.SignInResponse
+import com.example.data.model.request.RegisterRequest
 import com.example.data.model.request.SignInRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -23,7 +24,7 @@ class RemoteDataSource(private val httpClient: HttpClient, private val baseUrl: 
             Result.failure(ex)
         }
     }
-/*    suspend fun register(request: RegisterRequest): Result<SignInResponse> {
+    suspend fun register(request: RegisterRequest): Result<SignInResponse> {
         return try {
             val response = httpClient.post(urlString = REGISTER_ENDPOINT) {
                 setBody(request)
@@ -32,5 +33,5 @@ class RemoteDataSource(private val httpClient: HttpClient, private val baseUrl: 
         } catch (ex: Exception) {
             Result.failure(ex)
         }
-    }*/
+    }
 }
