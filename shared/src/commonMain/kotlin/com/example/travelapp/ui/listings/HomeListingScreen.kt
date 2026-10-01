@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import com.example.presentation.feature.listings.TravelListingViewModel
 import com.example.travelapp.ui.home.DestinationItem
 import com.example.travelapp.ui.home.DummyHomeData
@@ -37,6 +39,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeListingScreen(
+    backStack: NavBackStack<NavKey>,
     destinations: List<DestinationItem> = DummyHomeData.dummyDestinations,
     userName: String = "Leonardo",
     onNotificationClick: () -> Unit = {},

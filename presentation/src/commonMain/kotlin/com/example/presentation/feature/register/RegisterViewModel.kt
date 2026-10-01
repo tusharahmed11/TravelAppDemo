@@ -4,12 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.RegisterModel
 import com.example.domain.usecase.RegisterUseCase
+import com.example.presentation.feature.listings.AuthNavigation
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(private val registerUseCase: RegisterUseCase) : ViewModel() {
-
+    private val _navigationState = MutableSharedFlow<AuthNavigation>()
+    val navigationState = _navigationState.asSharedFlow()
     private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -60,10 +64,17 @@ class RegisterViewModel(private val registerUseCase: RegisterUseCase) : ViewMode
             )
             result.onSuccess { user ->
                 _uiState.value = _uiState.value.copy(user = user, isLoading = false)
+                _navigationState.emit(AuthNavigation.ToListing)
             }.onFailure { error ->
                 _uiState.value =
                     _uiState.value.copy(errorMessage = error.message, isLoading = false)
             }
+        }
+    }
+
+    fun signInClicked() {
+        viewModelScope.launch {
+            _navigationState.emit(AuthNavigation.ToLogin)
         }
     }
 

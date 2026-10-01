@@ -18,7 +18,9 @@ import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +36,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import com.example.presentation.feature.listings.AuthNavigation
 import com.example.presentation.feature.register.RegisterViewModel
+import com.example.travelapp.navigation.NavRoutes
 import com.example.travelapp.widget.AppCircleImageButton
 import com.example.travelapp.widget.AppPrimaryButton
 import com.example.travelapp.widget.AppSocialIconButton
@@ -43,10 +49,11 @@ import com.example.travelapp.widget.AppTextField
 import com.example.travelapp.widget.FacebookIcon
 import com.example.travelapp.widget.InstagramIcon
 import com.example.travelapp.widget.TwitterIcon
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun SignUpScreen(viewModel: RegisterViewModel = koinViewModel()) {
+fun SignUpScreen(backStack: NavBackStack<NavKey>,viewModel: RegisterViewModel = koinViewModel()) {
 
     val uiState = viewModel.uiState.collectAsState()
     var email = viewModel.email.collectAsState()
@@ -54,6 +61,17 @@ fun SignUpScreen(viewModel: RegisterViewModel = koinViewModel()) {
     var confirmPassword = viewModel.confirmPassword.collectAsState()
     var password = viewModel.password.collectAsState()
     var isPasswordVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(true){
+        viewModel.navigationState.collectLatest {
+            when(it){
+                is AuthNavigation.ToListing -> backStack.add(NavRoutes.Listing).apply { backStack.remove(
+                    NavRoutes.SignUp) }
+                is AuthNavigation.ToLogin -> backStack.remove(NavRoutes.SignUp)
+                else -> {}
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -179,13 +197,22 @@ fun SignUpScreen(viewModel: RegisterViewModel = koinViewModel()) {
                 color = Color(0xFF707B81),
                 fontSize = 14.sp
             )
-            Text(
-                text = "Sign in",
-                color = Color(0xFFFF7029),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.clickable { /* Handle sign up */ }
-            )
+
+            TextButton(
+                onClick = {
+                    viewModel.signInClicked()
+                },
+            ){
+                Text(
+                    text = "Sign in",
+                    color = Color(0xFFFF7029),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+
+                )
+            }
+
+
         }
 
         AppSpacer(60.dp)

@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.travelapp.navigation.AppNavRoot
 import com.example.travelapp.ui.listings.HomeListingScreen
 
 @Composable
@@ -18,7 +19,7 @@ fun App() {
                 .fillMaxSize()
                 .safeDrawingPadding()
         ) {
-            HomeListingScreen()
+            AppNavRoot()
         }
     }
 }

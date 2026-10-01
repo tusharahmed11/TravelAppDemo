@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias (libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -63,8 +64,14 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.material.icons.extended)
-            implementation("io.coil-kt.coil3:coil-compose:3.6.3")
-            implementation("io.coil-kt.coil3:coil-network-okhttp:3.6.3")
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.okhttp)
+
+            implementation(libs.koin.compose.navigation3)
+            implementation(libs.jetbrains.navigation3.ui)
+            implementation(libs.jetbrains.lifecycle.viewmodel.nav3)
+            implementation(libs.jetbrains.lifecycle.viewmodel)
+            implementation(libs.kotlinx.serialization.json)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
