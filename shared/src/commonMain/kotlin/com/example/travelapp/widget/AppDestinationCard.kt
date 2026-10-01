@@ -38,11 +38,18 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.input.key.Key.Companion.R
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun AppDestinationCard(
@@ -54,6 +61,7 @@ fun AppDestinationCard(
     cardHeight: Dp = 380.dp,
     imageHeight: Dp = 280.dp,
     initialBookmarked: Boolean = false,
+    imageList: List<String>,
     gradientColors: List<Color> = listOf(Color(0xFF56CCF2), Color(0xFF2F80ED), Color(0xFFF2994A)),
     onCardClick: () -> Unit = {},
     onBookmarkClick: (Boolean) -> Unit = {}
@@ -81,10 +89,20 @@ fun AppDestinationCard(
                     .height(imageHeight)
                     .clip(RoundedCornerShape(20.dp))
             ) {
-                // Vector landscape illustration placeholder
+/*                // Vector landscape illustration placeholder
                 DestinationArtPlaceholder(
                     colors = gradientColors,
                     modifier = Modifier.fillMaxSize()
+                )*/
+
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalPlatformContext.current)
+                        .data(imageList.firstOrNull() ?: "https://images.unsplash.com/photo-1740252117013-4fb21771e7ca")
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "Destination card image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
                 )
 
                 // Bookmark icon button on top-right with translucent circular background

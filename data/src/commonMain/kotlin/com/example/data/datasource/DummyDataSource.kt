@@ -1,12 +1,11 @@
 package com.example.data.datasource
 
-import com.example.data.model.TravelListingDto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class DummyDataSource {
 
-    private val _listing = MutableStateFlow(createDummyListings())
+/*    private val _listing = MutableStateFlow(createDummyListings())
     val listings = _listing.asStateFlow()
 
     private fun createDummyListings(): List<TravelListingDto> {
@@ -100,6 +99,6 @@ class DummyDataSource {
                 hostName = "Wayan Suryani"
             )
         )
-    }
+    }*/
 
 }

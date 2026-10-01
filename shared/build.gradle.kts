@@ -63,6 +63,8 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.material.icons.extended)
+            implementation("io.coil-kt.coil3:coil-compose:3.6.3")
+            implementation("io.coil-kt.coil3:coil-network-okhttp:3.6.3")
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

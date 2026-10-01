@@ -1,4 +1,4 @@
-package com.example.travelapp.listings
+package com.example.travelapp.ui.listings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -18,14 +18,15 @@ import org.koin.compose.viewmodel.koinViewModel
 fun TravelListingScreen(viewModel: TravelListingViewModel = koinViewModel()) {
     Scaffold {
         val listingsState = viewModel.state.collectAsStateWithLifecycle()
-
+/*
         LazyColumn(modifier = Modifier.padding(it)) {
             items(listingsState.value.listings) { listing ->
                 TravelListingItem(listing = listing)
             }
-        }
+        }*/
     }
 }
+/*
 
 @Composable
 fun TravelListingItem(listing: TravelListing) {
@@ -36,4 +37,4 @@ fun TravelListingItem(listing: TravelListing) {
         Text(text = listing.title)
         Text(text = listing.description)
     }
-}
+}*/

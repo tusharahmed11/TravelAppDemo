@@ -1,6 +1,6 @@
 package com.example.data.mappers
 
-import com.example.data.model.TravelListingDto
+import com.example.data.model.response.listing.TravelListingDto
 import com.example.domain.model.TravelListing
 
 object TravelListingMapper {
@@ -8,33 +8,13 @@ object TravelListingMapper {
         return TravelListing(
             id = dto.id,
             title = dto.title,
-            description = dto.description,
             location = dto.location,
-            imageUrl = dto.imageUrl,
-            pricePerNight = dto.pricePerNight,
+            imageUrl = dto.images,
             rating = dto.rating,
-            amenities = dto.amenities ?: emptyList(),
-            hostName = dto.hostName,
-            isFavorite = dto.isFavorite
         )
     }
 
     fun toDomain(dtos: List<TravelListingDto>): List<TravelListing> {
         return dtos.map { toDomain(it) }
-    }
-
-    fun toDto(domain: TravelListing): TravelListingDto {
-        return TravelListingDto(
-            id = domain.id,
-            title = domain.title,
-            description = domain.description,
-            location = domain.location,
-            imageUrl = domain.imageUrl,
-            pricePerNight = domain.pricePerNight,
-            rating = domain.rating,
-            amenities = domain.amenities.takeIf { it.isNotEmpty() },
-            hostName = domain.hostName,
-            isFavorite = domain.isFavorite
-        )
     }
 }

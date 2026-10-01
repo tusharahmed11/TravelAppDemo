@@ -1,9 +1,8 @@
-package com.example.travelapp.ui.home
+package com.example.travelapp.ui.listings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,19 +15,25 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.presentation.feature.listings.TravelListingViewModel
+import com.example.travelapp.ui.home.DestinationItem
+import com.example.travelapp.ui.home.DummyHomeData
 import com.example.travelapp.widget.AppCircleImageButton
 import com.example.travelapp.widget.AppDestinationCard
 import com.example.travelapp.widget.AppSpacer
 import com.example.travelapp.widget.AppUserProfileBadge
 import com.example.travelapp.widget.HighlightedHeading
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeListingScreen(
@@ -37,8 +42,12 @@ fun HomeListingScreen(
     onNotificationClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
     onViewAllClick: () -> Unit = {},
-    onDestinationClick: (DestinationItem) -> Unit = {}
+    onDestinationClick: (DestinationItem) -> Unit = {},
+    viewModel: TravelListingViewModel = koinViewModel()
 ) {
+
+    val uiState = viewModel.state.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -106,21 +115,38 @@ fun HomeListingScreen(
         AppSpacer(16.dp)
 
         // Horizontal Carousel of Destination Cards
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = 20.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            items(destinations, key = { it.id }) { destination ->
-                AppDestinationCard(
-                    title = destination.title,
-                    location = destination.location,
-                    rating = destination.rating,
-                    initialBookmarked = destination.isBookmarked,
-                    onCardClick = { onDestinationClick(destination) }
-                )
+
+        if (uiState.value.isLoading){
+            CircularProgressIndicator()
+        }
+
+        uiState.value.errorMessage?.let {
+            Text(
+                text = it,
+                color = Color.Red,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+
+        uiState.value.listings.takeIf { it.isNotEmpty() }?.let { listingList ->
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(listingList, key = { it.id }) { listing ->
+                    AppDestinationCard(
+                        title = listing.title,
+                        location = listing.location,
+                        rating = listing.rating,
+                        initialBookmarked = listing.isFavorite,
+                        imageList = listing.imageUrl,
+                    )
+                }
             }
         }
+
+
 
         AppSpacer(28.dp)
     }

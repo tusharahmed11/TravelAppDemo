@@ -48,12 +48,12 @@ val dataModule = module {
     }
 
     single { RemoteDataSource(
-        get <HttpClient>(),get()
+        get <HttpClient>(), baseUrl = get<String>()
     ) }
 
     single<ListingRepository> {
         ListingRepositoryImpl(
-            get<DummyDataSource>()
+            get<RemoteDataSource>()
         )
     }
 
