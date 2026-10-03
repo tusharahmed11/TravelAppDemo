@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.example.presentation.feature.listings.TravelListingViewModel
+import com.example.travelapp.navigation.NavRoutes
 import com.example.travelapp.ui.home.DestinationItem
 import com.example.travelapp.ui.home.DummyHomeData
 import com.example.travelapp.widget.AppCircleImageButton
@@ -40,12 +41,10 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun HomeListingScreen(
     backStack: NavBackStack<NavKey>,
-    destinations: List<DestinationItem> = DummyHomeData.dummyDestinations,
     userName: String = "Leonardo",
     onNotificationClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
     onViewAllClick: () -> Unit = {},
-    onDestinationClick: (DestinationItem) -> Unit = {},
     viewModel: TravelListingViewModel = koinViewModel()
 ) {
 
@@ -139,11 +138,10 @@ fun HomeListingScreen(
             ) {
                 items(listingList, key = { it.id }) { listing ->
                     AppDestinationCard(
-                        title = listing.title,
-                        location = listing.location,
-                        rating = listing.rating,
-                        initialBookmarked = listing.isFavorite,
-                        imageList = listing.imageUrl,
+                        travelListing = listing,
+                        onCardClick = { clickedListing->
+                            backStack.add(NavRoutes.ListingDetails(id = clickedListing.id))
+                        }
                     )
                 }
             }

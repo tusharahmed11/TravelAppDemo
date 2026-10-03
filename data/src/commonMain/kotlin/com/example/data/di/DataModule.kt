@@ -1,10 +1,15 @@
 package com.example.data.di
 
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import com.example.data.datasource.CacheDataSource
 import com.example.data.datasource.DummyDataSource
 import com.example.data.datasource.RemoteDataSource
+import com.example.data.repository.CacheRepositoryImpl
 import com.example.data.repository.ListingRepositoryImpl
 import com.example.data.repository.UserRepositoryImp
+import com.example.domain.repository.CacheRepository
 import com.example.domain.repository.ListingRepository
 import com.example.domain.repository.UserRepository
 import io.ktor.client.HttpClient
@@ -20,6 +25,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
+import kotlin.coroutines.EmptyCoroutineContext.get
 
 val dataModule = module {
     single { DummyDataSource() }
@@ -51,6 +57,8 @@ val dataModule = module {
         get <HttpClient>(), baseUrl = get<String>()
     ) }
 
+    single { CacheDataSource(dataStore = get<DataStore<Preferences>>()) }
+
     single<ListingRepository> {
         ListingRepositoryImpl(
             get<RemoteDataSource>()
@@ -59,7 +67,11 @@ val dataModule = module {
 
     single<UserRepository> {
         UserRepositoryImp(
-            get<RemoteDataSource>()
+            get<RemoteDataSource>(),
+            cacheDataSource = get<CacheDataSource>()
         )
+    }
+    single<CacheRepository> {
+        CacheRepositoryImpl(get<CacheDataSource>())
     }
 }

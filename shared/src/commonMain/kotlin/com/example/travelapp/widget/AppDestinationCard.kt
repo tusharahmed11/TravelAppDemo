@@ -49,30 +49,27 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.domain.model.TravelListing
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun AppDestinationCard(
-    title: String,
-    location: String,
-    rating: Double,
+    travelListing: TravelListing,
     modifier: Modifier = Modifier,
     cardWidth: Dp = 260.dp,
     cardHeight: Dp = 380.dp,
     imageHeight: Dp = 280.dp,
-    initialBookmarked: Boolean = false,
-    imageList: List<String>,
     gradientColors: List<Color> = listOf(Color(0xFF56CCF2), Color(0xFF2F80ED), Color(0xFFF2994A)),
-    onCardClick: () -> Unit = {},
+    onCardClick: (TravelListing) -> Unit = {},
     onBookmarkClick: (Boolean) -> Unit = {}
 ) {
-    var isBookmarked by remember { mutableStateOf(initialBookmarked) }
+    var isBookmarked by remember { mutableStateOf(travelListing.isFavorite) }
 
     Card(
         modifier = modifier
             .width(cardWidth)
             .height(cardHeight)
-            .clickable(onClick = onCardClick),
+            .clickable(onClick = { onCardClick(travelListing) }),
         shape = RoundedCornerShape(26.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -97,7 +94,7 @@ fun AppDestinationCard(
 
                 AsyncImage(
                     model = ImageRequest.Builder(LocalPlatformContext.current)
-                        .data(imageList.firstOrNull() ?: "https://images.unsplash.com/photo-1740252117013-4fb21771e7ca")
+                        .data(travelListing.imageUrl.firstOrNull() ?: "https://images.unsplash.com/photo-1740252117013-4fb21771e7ca")
                         .crossfade(true)
                         .build(),
                     contentDescription = "Destination card image",
@@ -137,7 +134,7 @@ fun AppDestinationCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = title,
+                    text = travelListing.title,
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF1B1E28),
@@ -157,7 +154,7 @@ fun AppDestinationCard(
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
-                        text = rating.toString(),
+                        text = travelListing.rating.toString(),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color(0xFF1B1E28)
@@ -185,7 +182,7 @@ fun AppDestinationCard(
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
-                        text = location,
+                        text = travelListing.location,
                         fontSize = 13.sp,
                         color = Color(0xFF7D848D),
                         maxLines = 1,

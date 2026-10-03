@@ -1,11 +1,14 @@
 package com.example.travelapp.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
+import com.example.travelapp.ui.details.TravelItemDetailsScreen
 import com.example.travelapp.ui.listings.HomeListingScreen
 import com.example.travelapp.ui.signin.LoginScreen
 import com.example.travelapp.ui.signup.SignUpScreen
@@ -14,7 +17,7 @@ import kotlinx.serialization.modules.polymorphic
 
 
 @Composable
-fun AppNavRoot(){
+fun AppNavRoot(userToken: String?){
 
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration {
@@ -26,11 +29,15 @@ fun AppNavRoot(){
                 }
             }
         },
-        NavRoutes.Login
+        if(userToken!=null) NavRoutes.Listing else NavRoutes.Login
     )
 
     NavDisplay(
         backStack = backStack,
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+        ),
         entryProvider = {key->
 
             when(key){
@@ -42,6 +49,10 @@ fun AppNavRoot(){
                 }
                 is NavRoutes.Listing -> NavEntry(key){
                     HomeListingScreen(backStack = backStack)
+                }
+
+                is NavRoutes.ListingDetails ->NavEntry(key){
+                    TravelItemDetailsScreen(navStack= backStack, itemId = key.id)
                 }
 
                 else -> error("Unknown NavRoute: $key")

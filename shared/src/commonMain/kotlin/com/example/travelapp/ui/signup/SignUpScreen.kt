@@ -2,9 +2,8 @@ package com.example.travelapp.ui.signup
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -56,10 +55,10 @@ import org.koin.compose.viewmodel.koinViewModel
 fun SignUpScreen(backStack: NavBackStack<NavKey>,viewModel: RegisterViewModel = koinViewModel()) {
 
     val uiState = viewModel.uiState.collectAsState()
-    var email = viewModel.email.collectAsState()
-    var name = viewModel.name.collectAsState()
-    var confirmPassword = viewModel.confirmPassword.collectAsState()
-    var password = viewModel.password.collectAsState()
+    val email = viewModel.email.collectAsState()
+    val name = viewModel.name.collectAsState()
+    val confirmPassword = viewModel.confirmPassword.collectAsState()
+    val password = viewModel.password.collectAsState()
     var isPasswordVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(true){

@@ -1,5 +1,6 @@
 package com.example.data.repository
 
+import com.example.data.datasource.CacheDataSource
 import com.example.data.datasource.RemoteDataSource
 import com.example.data.mappers.RegisterRequestMapper
 import com.example.data.mappers.UserMapper
@@ -8,7 +9,7 @@ import com.example.domain.model.RegisterModel
 import com.example.domain.model.UserModel
 import com.example.domain.repository.UserRepository
 
-class UserRepositoryImp(val dataSource: RemoteDataSource) : UserRepository {
+class UserRepositoryImp(val dataSource: RemoteDataSource,private val cacheDataSource: CacheDataSource) : UserRepository {
     override suspend fun login(
         email: String,
         password: String
@@ -18,6 +19,7 @@ class UserRepositoryImp(val dataSource: RemoteDataSource) : UserRepository {
             if (response.isSuccess) {
                 val response = response.getOrNull()!!
                 val userModel = UserMapper.toDomain(response.user)
+                cacheDataSource.saveAuthToken(response.token)
                 Result.success(userModel)
             } else {
                 Result.failure(Exception("Login failed with status code: ${response.exceptionOrNull()}"))
@@ -33,6 +35,7 @@ class UserRepositoryImp(val dataSource: RemoteDataSource) : UserRepository {
             if (response.isSuccess) {
                 val response = response.getOrNull()!!
                 val userModel = UserMapper.toDomain(response.user)
+                cacheDataSource.saveAuthToken(response.token)
                 Result.success(userModel)
             } else {
                 Result.failure(Exception("Registration failed with status code: ${response.exceptionOrNull()}"))
